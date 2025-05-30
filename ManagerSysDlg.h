@@ -38,4 +38,8 @@ public:
 private:
 	CBitmap m_bmp; // 添加这一行用于管理图片资源
 
+public:
+	afx_msg void OnNMCustomdrawProgress1(NMHDR* pNMHDR, LRESULT* pResult);
+	void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	int m_age;
 };

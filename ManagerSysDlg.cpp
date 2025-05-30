@@ -46,6 +46,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PICTURE, m_pic);
 
+
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
@@ -58,6 +59,7 @@ END_MESSAGE_MAP()
 
 CManagerSysDlg::CManagerSysDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MANAGERSYS_DIALOG, pParent)
+	, m_age(0)
 {
 	EnableActiveAccessibility();
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -67,6 +69,8 @@ void CManagerSysDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PICTURE, m_pic);
+	//DDX_Control(pDX, IDC_EDIT_AGE, m_age);
+
 }
 
 BEGIN_MESSAGE_MAP(CManagerSysDlg, CDialogEx)
@@ -74,6 +78,8 @@ BEGIN_MESSAGE_MAP(CManagerSysDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_STN_CLICKED(IDC_PICTURE, &CManagerSysDlg::OnStnClickedPicture)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_PROGRESS1, &CManagerSysDlg::OnNMCustomdrawProgress1)
+	//ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_AGE, &CManagerSysDlg::OnNMCustomdrawSliderAge)
 END_MESSAGE_MAP()
 
 
@@ -109,6 +115,24 @@ BOOL CManagerSysDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	// 进度条
+	CProgressCtrl* pProgress = (CProgressCtrl*)GetDlgItem(IDC_PROGRESS1); // 获取进度条控件指针
+	pProgress->ModifyStyle(0, PBS_MARQUEE); // 将进度条样式修改为 PBS_MARQUEE marquee：
+	pProgress->SetMarquee(TRUE, 25); // 设置为滚动模式，速度为 25 毫秒
+
+
+	//// slider
+	//// 获取 Slider 控件指针
+	//CSliderCtrl* pSlider = (CSliderCtrl*)GetDlgItem(IDC_SLIDER_AGE);
+	//// 设置范围为 0 到 80
+	//pSlider->SetRange(0, 80);
+	//// 设置初始位置
+	//pSlider->SetPos(0);
+	//// 显示刻度线（模拟 Auto Ticks 效果）
+	//pSlider->SetTicFreq(10);  // 每隔10显示一个刻度
+
+
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -166,22 +190,28 @@ HCURSOR CManagerSysDlg::OnQueryDragIcon()
 
 void CManagerSysDlg::OnStnClickedPicture()
 {
-	//// 先释放之前的位图资源，防止内存泄漏
-	//if (m_bmp.GetSafeHandle())
-	//	m_bmp.DeleteObject();
 
-	//// 从文件加载bmp
-	//HBITMAP hbmp = (HBITMAP)::LoadImage(NULL, _T("D:\\Work\\Pito\\pito.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-
-	//if (hbmp == NULL)
-	//{
-	//	AfxMessageBox(_T("加载图片失败！"));
-	//	return;
-	//}
-
-	//// 将HBITMAP绑定到成员变量，管理生命周期
-	//m_bmp.Attach(hbmp);
-
-	//// 设置控件显示位图
-	//m_pic.SetBitmap(hbmp);
 }
+
+// 不确定进度加载
+void CManagerSysDlg::OnNMCustomdrawProgress1(NMHDR* pNMHDR, LRESULT* pResult)
+{ 
+	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+
+	*pResult = 0;
+}
+
+
+//void CManagerSysDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+//{
+//	CSliderCtrl* pSlider = (CSliderCtrl*)GetDlgItem(IDC_SLIDER_AGE);
+//
+//	if ((CScrollBar*)pSlider == pScrollBar)
+//	{
+//		m_age = pSlider->GetPos();  // 获取滑块值，赋给绑定变量
+//		UpdateData(FALSE);          // 将 m_age 写入界面上的 Edit 控件
+//	}
+//
+//	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
+//}

@@ -16,6 +16,7 @@
 
 BEGIN_MESSAGE_MAP(CManagerSysApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
+	//ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_AGE, &CManagerSysApp::OnNMCustomdrawSliderAge)
 END_MESSAGE_MAP()
 
 
@@ -124,3 +125,23 @@ int CManagerSysApp::ExitInstance()
 
 	return CWinApp::ExitInstance();
 }
+
+
+//void CManagerSysApp::OnNMCustomdrawSliderAge(NMHDR* pNMHDR, LRESULT* pResult)
+//{
+//	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
+//	// TODO: 在此添加控件通知处理程序代码
+//	*pResult = 0;
+//}
+
+
+//void CManagerSysDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+//{
+//    if (pScrollBar->GetSafeHwnd() == GetDlgItem(IDC_SLIDER_AGE)->GetSafeHwnd())
+//    {
+//        int value = ((CSliderCtrl*)pScrollBar)->GetPos();
+//        SetDlgItemInt(IDC_EDIT_AGE, value);
+//    }
+//
+//    CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
+//}
