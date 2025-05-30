@@ -1,0 +1,21 @@
+# Ignore build output
+x64/
+ManagerSys/x64/
+*.obj
+*.pdb
+*.idb
+*.ilk
+*.log
+*.tlog
+*.lastbuildstate
+*.pch
+*.aps
+*.VC.db
+*.suo
+*.user
+*.exe
+*.cache
+*.ipch
+
+# Visual Studio settings
+.vs/
