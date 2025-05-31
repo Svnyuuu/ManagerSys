@@ -8,7 +8,7 @@
 #include "ManagerSysDlg.h"
 #include "afxdialogex.h"
 #include "afxwin.h"
-
+#include <vector> // 添加此行以包含 std::vector 的定义
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,6 +34,8 @@ public:
 // 实现
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	/*afx_msg void OnBnClickedButtonPopN();*/
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -47,6 +49,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	/*ON_BN_CLICKED(IDC_BUTTON_POP_N, &CAboutDlg::OnBnClickedButtonPopN)*/
 END_MESSAGE_MAP()
 
 
@@ -101,6 +104,7 @@ BEGIN_MESSAGE_MAP(CManagerSysDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_GRADE, &CManagerSysDlg::OnCbnSelchangeGrade)
 	ON_BN_CLICKED(IDC_BUTTON_OPEN, &CManagerSysDlg::OnBnClickedButtonOpen)
 	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CManagerSysDlg::OnBnClickedSaveFile)
+	ON_BN_CLICKED(IDC_BUTTON_POP_N, &CManagerSysDlg::OnBnClickedButtonPopN)
 END_MESSAGE_MAP()
 
 
@@ -157,6 +161,8 @@ BOOL CManagerSysDlg::OnInitDialog()
 	m_grade.AddString(_T("2022级"));
 	m_grade.AddString(_T("2023级"));
 	m_grade.AddString(_T("2024级"));
+
+
 
 
 	// 专业下拉框
@@ -234,7 +240,7 @@ void CManagerSysDlg::OnNMCustomdrawProgress1(NMHDR* pNMHDR, LRESULT* pResult)
 
 
 
-
+// 
 void CManagerSysDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -253,23 +259,39 @@ void CManagerSysDlg::OnCbnSelchangeGrade()
 }
 
 
-
+// txt部分
 
 void CManagerSysDlg::OnBnClickedButtonOpen()
 {
-	// TODO: 在此添加控件通知处理程序代码
 	CFileDialog dlg(TRUE, _T("txt"), NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
 		_T("Text Files (*.txt)|*.txt||"), this);
 
 	if (dlg.DoModal() == IDOK)
 	{
 		CString pathName = dlg.GetPathName();
-		CStdioFile file;
-		CString line;
-		if (file.Open(pathName, CFile::modeRead | CFile::typeText))
+		CFile file;
+		if (file.Open(pathName, CFile::modeRead | CFile::typeBinary))
 		{
-			int lineIndex = 0;
-			while (file.ReadString(line))
+			ULONGLONG fileLen = file.GetLength();
+			if (fileLen == 0) return;
+
+			// 读取全部内容
+			std::vector<BYTE> buffer((size_t)fileLen);
+			file.Read(buffer.data(), (UINT)fileLen);
+			file.Close();
+
+			// 跳过UTF-8 BOM
+			int offset = 0;
+			if (fileLen >= 3 && buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
+				offset = 3;
+
+			// 转为CString
+			CString content = CA2W((LPCSTR)(buffer.data() + offset), CP_UTF8);
+
+			// 按行分割
+			int pos = 0, lineIndex = 0;
+			CString line = content.Tokenize(_T("\n"), pos);
+			while (!line.IsEmpty())
 			{
 				line.Trim();
 				switch (lineIndex)
@@ -277,12 +299,45 @@ void CManagerSysDlg::OnBnClickedButtonOpen()
 				case 0: m_nameEdit.SetWindowText(line); break;
 				case 1: m_idEdit.SetWindowText(line); break;
 				case 2: m_ipEdit.SetWindowText(line); break;
+				case 3: m_phyAddrEdit.SetWindowText(line); break;
+				case 4: m_subnetEdit.SetWindowText(line); break;
+				case 5: m_politicsEdit.SetWindowText(line); break;
+				case 6: m_contactEdit.SetWindowText(line); break;
+				case 7:
+				{
+					int index = m_grade.FindStringExact(-1, line);
+					if (index != CB_ERR)
+						m_grade.SetCurSel(index);
+				}
+				break;
+				case 8:
+				{
+					int index = m_major.FindStringExact(-1, line);
+					if (index != CB_ERR)
+						m_major.SetCurSel(index);
+				}
+				case 9:
+					if (line == _T("男")) {
+						m_radioMale.SetCheck(BST_CHECKED);
+						m_radioFemale.SetCheck(BST_UNCHECKED);
+					}
+					else if (line == _T("女")) {
+						m_radioMale.SetCheck(BST_UNCHECKED);
+						m_radioFemale.SetCheck(BST_CHECKED);
+					}
+				break;
+				case 10: m_age = _ttoi(line);
+					m_slider.SetPos(m_age);
+					SetDlgItemInt(IDC_EDIT_AGE, m_age);
+					break;
+
 				}
 				lineIndex++;
+				line = content.Tokenize(_T("\n"), pos);
 			}
-			file.Close();
 		}
 	}
+
 }
 
 
@@ -304,27 +359,36 @@ void CManagerSysDlg::OnBnClickedSaveFile()
 	int age = m_slider.GetPos();
 	CString gender = m_radioMale.GetCheck() ? _T("男") : _T("女");
 
-	CFileDialog dlg(FALSE, _T("txt"), _T("info.txt"),
-		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Text Files (*.txt)|*.txt||"), this);
+	CString path = _T("D:\\Work\\Files\\junior_d\\socket\\ManagerSys\\aaa\\info.txt");
 
-	if (dlg.DoModal() == IDOK)
+	// 拼接所有内容
+	CString content;
+	content.Format(_T("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%d\n"),
+		name, id, ip, phy, subnet, politics, contact, grade, major, gender, age);
+
+	// 转为UTF-8编码
+	CT2CA utf8Str(content, CP_UTF8);
+
+	CFile file;
+	if (file.Open(path, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
 	{
-		CString path = dlg.GetPathName();
-		CStdioFile file;
-		if (file.Open(path, CFile::modeCreate | CFile::modeWrite | CFile::typeText))
-		{
-			file.WriteString(name + _T("\n"));
-			file.WriteString(id + _T("\n"));
-			file.WriteString(ip + _T("\n"));
-			file.WriteString(phy + _T("\n"));
-			file.WriteString(subnet + _T("\n"));
-			file.WriteString(politics + _T("\n"));
-			file.WriteString(contact + _T("\n"));
-			file.WriteString(grade + _T("\n"));
-			file.WriteString(major + _T("\n"));
-			file.WriteString(gender + _T("\n"));
-			file.WriteString(CString(std::to_wstring(age).c_str()) + _T("\n"));
-			file.Close();
-		}
+		// 写入UTF-8 BOM
+		BYTE bom[] = { 0xEF, 0xBB, 0xBF };
+		file.Write(bom, 3);
+		// 写入UTF-8内容
+		file.Write(utf8Str, (UINT)strlen(utf8Str));
+		file.Close();
 	}
+}
+
+
+void CAboutDlg::OnBnClickedButtonPopN()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+}
+
+void CManagerSysDlg::OnBnClickedButtonPopN()
+{
+	// TODO: 在此添加控件通知处理程序代码
 }

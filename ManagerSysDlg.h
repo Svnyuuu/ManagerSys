@@ -58,4 +58,5 @@ public:
 
 	afx_msg void OnBnClickedButtonOpen();
 	afx_msg void OnBnClickedSaveFile();
+	afx_msg void OnBnClickedButtonPopN();
 };
