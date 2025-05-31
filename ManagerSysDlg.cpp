@@ -34,9 +34,6 @@ public:
 // 实现
 protected:
 	DECLARE_MESSAGE_MAP()
-	CBitmap m_bmp;  // 这个必须声明为成员变量，不能是局部变量
-	// 控件变量
-	CStatic m_pic;
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -47,13 +44,14 @@ CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_PICTURE, m_pic);
-
-
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
+
+
+
+// 以上是“关于”对话框 不用管
 
 
 // CManagerSysDlg 对话框
@@ -79,6 +77,17 @@ void CManagerSysDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Slider(pDX, IDC_SLIDER1, m_int);
 	DDX_Control(pDX, IDC_GRADE, m_grade);
 	DDX_Control(pDX, IDC_MAJOR, m_major);
+
+	DDX_Control(pDX, IDC_EDIT_NAME, m_nameEdit);
+	DDX_Control(pDX, IDC_EDIT_ID, m_idEdit);
+	DDX_Control(pDX, IDC_EDIT_IP, m_ipEdit);
+	DDX_Control(pDX, IDC_EDIT_MAC, m_phyAddrEdit);
+	DDX_Control(pDX, IDC_EDIT_MASK, m_subnetEdit);
+	DDX_Control(pDX, IDC_EDIT_PREF, m_politicsEdit);
+	DDX_Control(pDX, IDC_EDIT_CONTACT, m_contactEdit);
+	DDX_Control(pDX, IDC_MALE, m_radioMale);
+	DDX_Control(pDX, IDC_FEMALE, m_radioFemale);
+
 }
 
 BEGIN_MESSAGE_MAP(CManagerSysDlg, CDialogEx)
@@ -90,6 +99,8 @@ BEGIN_MESSAGE_MAP(CManagerSysDlg, CDialogEx)
 	//ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_AGE, &CManagerSysDlg::OnNMCustomdrawSliderAge)
 	ON_WM_HSCROLL()
 	ON_CBN_SELCHANGE(IDC_GRADE, &CManagerSysDlg::OnCbnSelchangeGrade)
+	ON_BN_CLICKED(IDC_BUTTON_OPEN, &CManagerSysDlg::OnBnClickedButtonOpen)
+	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CManagerSysDlg::OnBnClickedSaveFile)
 END_MESSAGE_MAP()
 
 
@@ -157,7 +168,7 @@ BOOL CManagerSysDlg::OnInitDialog()
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
-void CManagerSysDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CManagerSysDlg::OnSysCommand(UINT nID, LPARAM lParam) // 处理系统命令
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
@@ -239,4 +250,81 @@ void CManagerSysDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 void CManagerSysDlg::OnCbnSelchangeGrade()
 {
 	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+
+
+void CManagerSysDlg::OnBnClickedButtonOpen()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CFileDialog dlg(TRUE, _T("txt"), NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
+		_T("Text Files (*.txt)|*.txt||"), this);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		CString pathName = dlg.GetPathName();
+		CStdioFile file;
+		CString line;
+		if (file.Open(pathName, CFile::modeRead | CFile::typeText))
+		{
+			int lineIndex = 0;
+			while (file.ReadString(line))
+			{
+				line.Trim();
+				switch (lineIndex)
+				{
+				case 0: m_nameEdit.SetWindowText(line); break;
+				case 1: m_idEdit.SetWindowText(line); break;
+				case 2: m_ipEdit.SetWindowText(line); break;
+				}
+				lineIndex++;
+			}
+			file.Close();
+		}
+	}
+}
+
+
+void CManagerSysDlg::OnBnClickedSaveFile()
+{
+	CString name, id, ip, phy, subnet, politics, contact;
+	m_nameEdit.GetWindowText(name);
+	m_idEdit.GetWindowText(id);
+	m_ipEdit.GetWindowText(ip);
+	m_phyAddrEdit.GetWindowText(phy);
+	m_subnetEdit.GetWindowText(subnet);
+	m_politicsEdit.GetWindowText(politics);
+	m_contactEdit.GetWindowText(contact);
+
+	CString grade, major;
+	m_grade.GetLBText(m_grade.GetCurSel(), grade);
+	m_major.GetLBText(m_major.GetCurSel(), major);
+
+	int age = m_slider.GetPos();
+	CString gender = m_radioMale.GetCheck() ? _T("男") : _T("女");
+
+	CFileDialog dlg(FALSE, _T("txt"), _T("info.txt"),
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Text Files (*.txt)|*.txt||"), this);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		CString path = dlg.GetPathName();
+		CStdioFile file;
+		if (file.Open(path, CFile::modeCreate | CFile::modeWrite | CFile::typeText))
+		{
+			file.WriteString(name + _T("\n"));
+			file.WriteString(id + _T("\n"));
+			file.WriteString(ip + _T("\n"));
+			file.WriteString(phy + _T("\n"));
+			file.WriteString(subnet + _T("\n"));
+			file.WriteString(politics + _T("\n"));
+			file.WriteString(contact + _T("\n"));
+			file.WriteString(grade + _T("\n"));
+			file.WriteString(major + _T("\n"));
+			file.WriteString(gender + _T("\n"));
+			file.WriteString(CString(std::to_wstring(age).c_str()) + _T("\n"));
+			file.Close();
+		}
+	}
 }

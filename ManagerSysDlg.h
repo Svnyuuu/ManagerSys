@@ -52,4 +52,10 @@ public:
 	CComboBox m_grade;
 	afx_msg void OnCbnSelchangeGrade();
 	CComboBox m_major;
+
+	CEdit m_nameEdit, m_idEdit, m_ipEdit, m_phyAddrEdit, m_subnetEdit, m_politicsEdit, m_contactEdit;
+	CButton m_radioMale, m_radioFemale;
+
+	afx_msg void OnBnClickedButtonOpen();
+	afx_msg void OnBnClickedSaveFile();
 };
