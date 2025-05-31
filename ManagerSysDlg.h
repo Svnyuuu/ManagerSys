@@ -1,6 +1,8 @@
 ﻿
 // ManagerSysDlg.h: 头文件
 //
+#include "afxwin.h"
+
 
 #pragma once
 
@@ -47,4 +49,7 @@ private:
 	int m_int;
 public:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	CComboBox m_grade;
+	afx_msg void OnCbnSelchangeGrade();
+	CComboBox m_major;
 };

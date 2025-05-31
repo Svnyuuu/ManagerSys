@@ -7,10 +7,13 @@
 #include "ManagerSys.h"
 #include "ManagerSysDlg.h"
 #include "afxdialogex.h"
+#include "afxwin.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
 
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
@@ -74,6 +77,8 @@ void CManagerSysDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Control(pDX, IDC_SLIDER1, m_slider);
 	DDX_Slider(pDX, IDC_SLIDER1, m_int);
+	DDX_Control(pDX, IDC_GRADE, m_grade);
+	DDX_Control(pDX, IDC_MAJOR, m_major);
 }
 
 BEGIN_MESSAGE_MAP(CManagerSysDlg, CDialogEx)
@@ -84,6 +89,7 @@ BEGIN_MESSAGE_MAP(CManagerSysDlg, CDialogEx)
 	//ON_NOTIFY(NM_CUSTOMDRAW, IDC_PROGRESS1, &CManagerSysDlg::OnNMCustomdrawProgress1)
 	//ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_AGE, &CManagerSysDlg::OnNMCustomdrawSliderAge)
 	ON_WM_HSCROLL()
+	ON_CBN_SELCHANGE(IDC_GRADE, &CManagerSysDlg::OnCbnSelchangeGrade)
 END_MESSAGE_MAP()
 
 
@@ -125,25 +131,28 @@ BOOL CManagerSysDlg::OnInitDialog()
 	pProgress->SetMarquee(TRUE, 25); // 设置为滚动模式，速度为 25 毫秒
 
 
-	//// slider
-	//// 获取 Slider 控件指针
-	//CSliderCtrl* pSlider = (CSliderCtrl*)GetDlgItem(IDC_SLIDER_AGE);
-	//// 设置范围为 0 到 80
-	//pSlider->SetRange(0, 80);
-	//// 设置初始位置
-	//pSlider->SetPos(0);
-	//// 显示刻度线（模拟 Auto Ticks 效果）
-	//pSlider->SetTicFreq(10);  // 每隔10显示一个刻度
-	 //设置滚动条滚动范围
-	m_slider.SetRange(0, 100);
+	// 年龄滑块
+	m_slider.SetRange(10, 80);
 	//每十个单位画一个刻度
-	m_slider.SetTicFreq(10);
+	m_slider.SetTicFreq(1);
 	//设置初始位置
-	int Start = 80;
+	int Start = 20;
 	m_slider.SetPos(Start);//滚动条初始位置
 	SetDlgItemInt(IDC_EDIT_AGE, Start);//设置编辑框的初始值
 
 
+	// 年级下拉框
+	m_grade.AddString(_T("2021级"));
+	m_grade.AddString(_T("2022级"));
+	m_grade.AddString(_T("2023级"));
+	m_grade.AddString(_T("2024级"));
+
+
+	// 专业下拉框
+	m_major.AddString(_T("计算机科学与技术"));
+	m_major.AddString(_T("软件工程"));
+	m_major.AddString(_T("信息安全"));
+	m_major.AddString(_T("网络工程"));
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -213,18 +222,6 @@ void CManagerSysDlg::OnNMCustomdrawProgress1(NMHDR* pNMHDR, LRESULT* pResult)
 }
 
 
-//void CManagerSysDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
-//{
-//	CSliderCtrl* pSlider = (CSliderCtrl*)GetDlgItem(IDC_SLIDER_AGE);
-//
-//	if ((CScrollBar*)pSlider == pScrollBar)
-//	{
-//		m_age = pSlider->GetPos();  // 获取滑块值，赋给绑定变量
-//		UpdateData(FALSE);          // 将 m_age 写入界面上的 Edit 控件
-//	}
-//
-//	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
-//}
 
 
 void CManagerSysDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
@@ -236,4 +233,10 @@ void CManagerSysDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	//内容设置到编辑框中，编辑框的ID是IDC_EDIT1
 	SetDlgItemInt(IDC_EDIT_AGE, m_int);
 	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+
+void CManagerSysDlg::OnCbnSelchangeGrade()
+{
+	// TODO: 在此添加控件通知处理程序代码
 }
