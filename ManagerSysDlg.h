@@ -40,6 +40,11 @@ private:
 
 public:
 	afx_msg void OnNMCustomdrawProgress1(NMHDR* pNMHDR, LRESULT* pResult);
-	void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	// void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	int m_age;
+private:
+	CSliderCtrl m_slider;
+	int m_int;
+public:
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 };

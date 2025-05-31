@@ -60,6 +60,7 @@ END_MESSAGE_MAP()
 CManagerSysDlg::CManagerSysDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MANAGERSYS_DIALOG, pParent)
 	, m_age(0)
+	, m_int(0)
 {
 	EnableActiveAccessibility();
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -71,15 +72,18 @@ void CManagerSysDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PICTURE, m_pic);
 	//DDX_Control(pDX, IDC_EDIT_AGE, m_age);
 
+	DDX_Control(pDX, IDC_SLIDER1, m_slider);
+	DDX_Slider(pDX, IDC_SLIDER1, m_int);
 }
 
 BEGIN_MESSAGE_MAP(CManagerSysDlg, CDialogEx)
-	ON_WM_SYSCOMMAND()
-	ON_WM_PAINT()
-	ON_WM_QUERYDRAGICON()
-	ON_STN_CLICKED(IDC_PICTURE, &CManagerSysDlg::OnStnClickedPicture)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_PROGRESS1, &CManagerSysDlg::OnNMCustomdrawProgress1)
+	//ON_WM_SYSCOMMAND()
+	//ON_WM_PAINT()
+	//ON_WM_QUERYDRAGICON()
+	//ON_STN_CLICKED(IDC_PICTURE, &CManagerSysDlg::OnStnClickedPicture)
+	//ON_NOTIFY(NM_CUSTOMDRAW, IDC_PROGRESS1, &CManagerSysDlg::OnNMCustomdrawProgress1)
 	//ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_AGE, &CManagerSysDlg::OnNMCustomdrawSliderAge)
+	ON_WM_HSCROLL()
 END_MESSAGE_MAP()
 
 
@@ -130,7 +134,14 @@ BOOL CManagerSysDlg::OnInitDialog()
 	//pSlider->SetPos(0);
 	//// 显示刻度线（模拟 Auto Ticks 效果）
 	//pSlider->SetTicFreq(10);  // 每隔10显示一个刻度
-
+	 //设置滚动条滚动范围
+	m_slider.SetRange(0, 100);
+	//每十个单位画一个刻度
+	m_slider.SetTicFreq(10);
+	//设置初始位置
+	int Start = 80;
+	m_slider.SetPos(Start);//滚动条初始位置
+	SetDlgItemInt(IDC_EDIT_AGE, Start);//设置编辑框的初始值
 
 
 
@@ -190,7 +201,6 @@ HCURSOR CManagerSysDlg::OnQueryDragIcon()
 
 void CManagerSysDlg::OnStnClickedPicture()
 {
-
 }
 
 // 不确定进度加载
@@ -215,3 +225,15 @@ void CManagerSysDlg::OnNMCustomdrawProgress1(NMHDR* pNMHDR, LRESULT* pResult)
 //
 //	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
 //}
+
+
+void CManagerSysDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	CSliderCtrl* pSlider = (CSliderCtrl*)pScrollBar;
+	//获取当前位置值，放在变量m_int中
+	m_int = m_slider.GetPos();
+	//内容设置到编辑框中，编辑框的ID是IDC_EDIT1
+	SetDlgItemInt(IDC_EDIT_AGE, m_int);
+	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
+}

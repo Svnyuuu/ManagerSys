@@ -208,6 +208,7 @@
     <None Include="res\ManagerSys.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Pito\pito.bmp" />
     <Image Include="..\..\..\Pito\pito.bmp" />
     <Image Include="res\bitmap1.bmp" />
     <Image Include="res\ManagerSys.ico" />
