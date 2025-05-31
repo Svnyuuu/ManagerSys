@@ -68,6 +68,7 @@ CManagerSysDlg::CManagerSysDlg(CWnd* pParent /*=nullptr*/)
 {
 	EnableActiveAccessibility();
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_pcimdlg = NULL;
 }
 
 void CManagerSysDlg::DoDataExchange(CDataExchange* pDX)
@@ -382,13 +383,17 @@ void CManagerSysDlg::OnBnClickedSaveFile()
 }
 
 
-void CAboutDlg::OnBnClickedButtonPopN()
-{
-	// TODO: 在此添加控件通知处理程序代码
-
-}
 
 void CManagerSysDlg::OnBnClickedButtonPopN()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (m_pcimdlg == NULL) {//判定对话框是否有所指向
+
+		m_pcimdlg = new CIMDlg();//指向一个非模对话框示例
+
+		m_pcimdlg->Create(IDD_DIALOG1, this);//创建
+
+	}
+
+	m_pcimdlg->ShowWindow(SW_SHOW);//显示
 }
