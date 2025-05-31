@@ -188,6 +188,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="ManagerSys.h" />
     <ClInclude Include="ManagerSysDlg.h" />
+    <ClInclude Include="NPOPDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="CIMDlg.cpp" />
     <ClCompile Include="ManagerSys.cpp" />
     <ClCompile Include="ManagerSysDlg.cpp" />
+    <ClCompile Include="NPOPDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -2,7 +2,7 @@
 // ManagerSysDlg.h: 头文件
 //
 #include "afxwin.h"
-#include "CIMDlg.h"
+#include "NPOPDlg.h"
 
 #pragma once
 
@@ -20,7 +20,7 @@ public:
 	enum { IDD = IDD_MANAGERSYS_DIALOG };
 #endif
 
-	CIMDlg* m_pcimdlg;
+	NPOPDlg* m_pcimdlg;
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 

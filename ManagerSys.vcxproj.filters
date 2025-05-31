@@ -39,6 +39,9 @@
     <ClInclude Include="CIMDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="NPOPDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ManagerSys.cpp">
@@ -54,6 +57,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CIMDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="NPOPDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

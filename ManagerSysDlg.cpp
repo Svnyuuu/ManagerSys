@@ -384,16 +384,41 @@ void CManagerSysDlg::OnBnClickedSaveFile()
 
 
 
+//void CManagerSysDlg::OnBnClickedButtonPopN()
+//{
+//	// TODO: 在此添加控件通知处理程序代码
+//	CString name;
+//	if (m_pcimdlg == NULL) {//判定对话框是否有所指向
+//
+//		m_pcimdlg = new NPOPDlg();//指向一个非模对话框示例
+//		GetDlgItemText(IDC_EDIT_NAME, name); // 直接读取内容
+//		m_pcimdlg->nc_name = name; // 传递内容
+//		m_pcimdlg->Create(IDD_DIALOG_NPOP, this);//创建
+//
+//	} else {
+//		m_pcimdlg->nc_name = name; // 再次弹出时也可更新
+//		m_pcimdlg->n_name.SetWindowText(name);
+//	}
+//
+//	m_pcimdlg->ShowWindow(SW_SHOW);//显示
+//}
+
 void CManagerSysDlg::OnBnClickedButtonPopN()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	if (m_pcimdlg == NULL) {//判定对话框是否有所指向
-
-		m_pcimdlg = new CIMDlg();//指向一个非模对话框示例
-
-		m_pcimdlg->Create(IDD_DIALOG1, this);//创建
-
+	if (m_pcimdlg == nullptr || !::IsWindow(m_pcimdlg->GetSafeHwnd()))
+	{
+		m_pcimdlg = new NPOPDlg(); // 注意这里不能传 this，除非你打算做子窗口
+		m_pcimdlg->Create(IDD_DIALOG_NPOP, this); // 创建非模态对话框
+		m_pcimdlg->ShowWindow(SW_SHOW);
 	}
 
-	m_pcimdlg->ShowWindow(SW_SHOW);//显示
+	// 赋值数据到非模态窗口
+	m_pcimdlg->nc_name = _T("张三");
+	m_pcimdlg->nc_id = _T("20251234");
+	m_pcimdlg->nc_grade = _T("2022级");
+	m_pcimdlg->nc_major = _T("软件工程");
+
+	// 更新界面
+	m_pcimdlg->UpdateData(FALSE); // FALSE 是把变量的值更新到控件
 }
+
