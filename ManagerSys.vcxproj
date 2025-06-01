@@ -183,8 +183,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CDlgPOP.h" />
-    <ClInclude Include="CIMDlg.h" />
+    <!-- <ClInclude Include="CDlgPOP.h" />
+    <ClInclude Include="CIMDlg.h" /> -->
     <ClInclude Include="framework.h" />
     <ClInclude Include="ManagerSys.h" />
     <ClInclude Include="ManagerSysDlg.h" />
@@ -194,8 +194,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CDlgPOP.cpp" />
-    <ClCompile Include="CIMDlg.cpp" />
+    <!-- <ClCompile Include="CDlgPOP.cpp" />
+    <ClCompile Include="CIMDlg.cpp" /> -->
     <ClCompile Include="ManagerSys.cpp" />
     <ClCompile Include="ManagerSysDlg.cpp" />
     <ClCompile Include="NPOPDlg.cpp" />

@@ -386,39 +386,61 @@ void CManagerSysDlg::OnBnClickedSaveFile()
 
 //void CManagerSysDlg::OnBnClickedButtonPopN()
 //{
-//	// TODO: 在此添加控件通知处理程序代码
-//	CString name;
-//	if (m_pcimdlg == NULL) {//判定对话框是否有所指向
+//	CString name, id, grade, major;
+//	GetDlgItemText(IDC_EDIT_NAME, name);
+//	GetDlgItemText(IDC_EDIT_ID, id);
+//	m_grade.GetLBText(m_grade.GetCurSel(), grade);
+//	m_major.GetLBText(m_major.GetCurSel(), major);
 //
-//		m_pcimdlg = new NPOPDlg();//指向一个非模对话框示例
-//		GetDlgItemText(IDC_EDIT_NAME, name); // 直接读取内容
-//		m_pcimdlg->nc_name = name; // 传递内容
-//		m_pcimdlg->Create(IDD_DIALOG_NPOP, this);//创建
+//	if (m_pcimdlg == NULL) {
+//		m_pcimdlg = new NPOPDlg();
+//		m_pcimdlg->nc_name = name;
+//		m_pcimdlg->nc_id = id;
+//		m_pcimdlg->nc_grade = grade;
+//		m_pcimdlg->nc_major = major;
+//		m_pcimdlg->Create(IDD_DIALOG_NPOP, this);
 //
-//	} else {
-//		m_pcimdlg->nc_name = name; // 再次弹出时也可更新
 //		m_pcimdlg->n_name.SetWindowText(name);
+//		m_pcimdlg->n_id.SetWindowText(id);
+//		m_pcimdlg->n_grade.SetWindowText(grade);
+//		m_pcimdlg->n_major.SetWindowText(major);
+//	}
+//	else {
+//		m_pcimdlg->nc_name = name;
+//		m_pcimdlg->n_name.SetWindowText(name);
+//		m_pcimdlg->nc_id = id;
+//		m_pcimdlg->n_id.SetWindowText(id);
+//		m_pcimdlg->nc_grade = grade;
+//		m_pcimdlg->n_grade.SetWindowText(grade);
+//		m_pcimdlg->nc_major = major;
+//		m_pcimdlg->n_major.SetWindowText(major);
 //	}
 //
-//	m_pcimdlg->ShowWindow(SW_SHOW);//显示
+//	m_pcimdlg->ShowWindow(SW_SHOW);
 //}
 
 void CManagerSysDlg::OnBnClickedButtonPopN()
 {
-	if (m_pcimdlg == nullptr || !::IsWindow(m_pcimdlg->GetSafeHwnd()))
-	{
-		m_pcimdlg = new NPOPDlg(); // 注意这里不能传 this，除非你打算做子窗口
-		m_pcimdlg->Create(IDD_DIALOG_NPOP, this); // 创建非模态对话框
-		m_pcimdlg->ShowWindow(SW_SHOW);
+	CString name, id, grade, major;
+	GetDlgItemText(IDC_EDIT_NAME, name);
+	GetDlgItemText(IDC_EDIT_ID, id);
+	m_grade.GetLBText(m_grade.GetCurSel(), grade);
+	m_major.GetLBText(m_major.GetCurSel(), major);
+
+	if (m_pcimdlg == NULL) {
+		m_pcimdlg = new NPOPDlg();
+		m_pcimdlg->Create(IDD_DIALOG_NPOP, this);
 	}
 
-	// 赋值数据到非模态窗口
-	m_pcimdlg->nc_name = _T("张三");
-	m_pcimdlg->nc_id = _T("20251234");
-	m_pcimdlg->nc_grade = _T("2022级");
-	m_pcimdlg->nc_major = _T("软件工程");
+	// 无论是否第一次，都赋值并刷新
+	m_pcimdlg->nc_name = name;
+	m_pcimdlg->nc_id = id;
+	m_pcimdlg->nc_grade = grade;
+	m_pcimdlg->nc_major = major;
 
-	// 更新界面
-	m_pcimdlg->UpdateData(FALSE); // FALSE 是把变量的值更新到控件
+	// 立即刷新控件显示
+	m_pcimdlg->UpdateFields();
+
+	// 显示窗口
+	m_pcimdlg->ShowWindow(SW_SHOW);
 }
-

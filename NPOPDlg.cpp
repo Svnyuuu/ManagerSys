@@ -21,6 +21,7 @@ NPOPDlg::NPOPDlg(CWnd* pParent /*=nullptr*/)
 
 }
 
+
 NPOPDlg::~NPOPDlg()
 {
 }
@@ -32,10 +33,10 @@ void NPOPDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT3, n_grade);
 	DDX_Control(pDX, IDC_EDIT2, n_id);
 	DDX_Control(pDX, IDC_EDIT1, n_name);
-	DDX_Text(pDX, IDC_EDIT1, nc_name);
+	/*DDX_Text(pDX, IDC_EDIT1, nc_name);
 	DDX_Text(pDX, IDC_EDIT2, nc_id);
 	DDX_Text(pDX, IDC_EDIT3, nc_grade);
-	DDX_Text(pDX, IDC_EDIT4, nc_major);
+	DDX_Text(pDX, IDC_EDIT4, nc_major);*/
 }
 
 
@@ -52,4 +53,23 @@ LRESULT NPOPDlg::OnUpdateFields(WPARAM, LPARAM)
 	return 0;
 }
 
+void NPOPDlg::UpdateFields() {
+	// 实现内容
+	n_name.SetWindowText(nc_name);
+	n_id.SetWindowText(nc_id);
+	n_grade.SetWindowText(nc_grade);
+	n_major.SetWindowText(nc_major);
+}
+
+BOOL NPOPDlg::OnInitDialog()
+{
+    CDialogEx::OnInitDialog();
+
+    n_name.SetWindowText(nc_name);
+    n_id.SetWindowText(nc_id);
+    n_grade.SetWindowText(nc_grade);
+    n_major.SetWindowText(nc_major);
+
+    return TRUE;
+}
 // NPOPDlg 消息处理程序
